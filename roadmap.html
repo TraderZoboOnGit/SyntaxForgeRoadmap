@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SyntaxForge Path | Tools Sell Themselves</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+        }
+        
+        body {
+            background-color: #0a0a0f;
+            color: #e0e0f0;
+            min-height: 100vh;
+            overflow-x: hidden;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(28, 58, 173, 0.08) 0%, transparent 20%),
+                radial-gradient(circle at 90% 80%, rgba(115, 23, 173, 0.08) 0%, transparent 20%);
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding-top: 1rem;
+            position: relative;
+        }
+        
+        .logo {
+            font-size: 2.5rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, #4f6df5 0%, #a855f7 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            display: inline-block;
+        }
+        
+        .tagline {
+            font-size: 1.1rem;
+            color: #8a8ab5;
+            font-weight: 300;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 1rem;
+        }
+        
+        .moto {
+            font-size: 1rem;
+            color: #5d5d8d;
+            font-style: italic;
+            margin-bottom: 2rem;
+            position: relative;
+            display: inline-block;
+            padding: 0 1rem;
+        }
+        
+        .moto::before, .moto::after {
+            content: "⟡";
+            color: #4f6df5;
+            margin: 0 0.5rem;
+        }
+        
+        .stealth-note {
+            background: rgba(79, 109, 245, 0.1);
+            border: 1px solid rgba(79, 109, 245, 0.3);
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 2rem auto;
+            max-width: 600px;
+            font-size: 0.9rem;
+            color: #a0a0d0;
+            text-align: center;
+        }
+        
+        .roadmap-container {
+            position: relative;
+            margin: 3rem 0;
+        }
+        
+        /* Timeline line */
+        .timeline-line {
+            position: absolute;
+            left: 50%;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: linear-gradient(to bottom, #4f6df5, #a855f7);
+            transform: translateX(-50%);
+            z-index: 1;
+        }
+        
+        .stages {
+            position: relative;
+            z-index: 2;
+        }
+        
+        .stage-row {
+            display: flex;
+            margin-bottom: 4rem;
+            position: relative;
+        }
+        
+        .stage-row:nth-child(odd) {
+            flex-direction: row-reverse;
+        }
+        
+        .stage-card {
+            width: 45%;
+            background: rgba(20, 20, 30, 0.8);
+            border-radius: 12px;
+            border: 1px solid rgba(79, 109, 245, 0.2);
+            padding: 1.8rem;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .stage-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(79, 109, 245, 0.5);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+        }
+        
+        .stage-card.active {
+            border-color: #4f6df5;
+            box-shadow: 0 0 20px rgba(79, 109, 245, 0.3);
+        }
+        
+        /* Connector dots */
+        .stage-row::before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            width: 20px;
+            height: 20px;
+            background: #0a0a0f;
+            border: 3px solid #4f6df5;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 3;
+            transition: all 0.3s ease;
+        }
+        
+        .stage-row.active::before {
+            background: #4f6df5;
+            box-shadow: 0 0 15px rgba(79, 109, 245, 0.7);
+        }
+        
+        .stage-row.completed::before {
+            background: rgba(79, 109, 245, 0.3);
+        }
+        
+        .stage-number {
+            position: absolute;
+            top: -12px;
+            left: -12px;
+            width: 36px;
+            height: 36px;
+            background: #4f6df5;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1rem;
+            color: #0a0a0f;
+            z-index: 4;
+        }
+        
+        .stage-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 0.8rem;
+            color: #e0e0f0;
+            display: flex;
+            align-items: center;
+        }
+        
+        .stage-title i {
+            margin-right: 0.7rem;
+            color: #4f6df5;
+        }
+        
+        .stage-description {
+            color: #a0a0d0;
+            line-height: 1.5;
+            font-size: 0.95rem;
+            margin-bottom: 1rem;
+        }
+        
+        .stage-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+            margin-top: 1rem;
+        }
+        
+        .meta-tag {
+            background: rgba(79, 109, 245, 0.15);
+            color: #8a8aff;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            display: inline-flex;
+            align-items: center;
+        }
+        
+        .meta-tag i {
+            margin-right: 0.4rem;
+            font-size: 0.7rem;
+        }
+        
+        .token-burn {
+            background: rgba(231, 76, 60, 0.15);
+            color: #e74c3c;
+        }
+        
+        .stage-status {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            font-size: 0.8rem;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+        }
+        
+        .status-complete {
+            background: rgba(46, 204, 113, 0.15);
+            color: #2ecc71;
+        }
+        
+        .status-active {
+            background: rgba(79, 109, 245, 0.15);
+            color: #4f6df5;
+        }
+        
+        .status-upcoming {
+            background: rgba(155, 89, 182, 0.15);
+            color: #9b59b6;
+        }
+        
+        .status-tbc {
+            background: rgba(241, 196, 15, 0.15);
+            color: #f1c40f;
+        }
+        
+        .current-focus {
+            background: rgba(79, 109, 245, 0.1);
+            border: 1px solid rgba(79, 109, 245, 0.3);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 3rem 0;
+            text-align: center;
+        }
+        
+        .current-focus h3 {
+            color: #4f6df5;
+            margin-bottom: 0.5rem;
+            font-size: 1.2rem;
+        }
+        
+        .current-focus p {
+            color: #a0a0d0;
+            font-size: 0.95rem;
+        }
+        
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin: 3rem 0 1rem;
+        }
+        
+        .control-btn {
+            background: rgba(79, 109, 245, 0.1);
+            border: 1px solid #4f6df5;
+            color: #a0a0d0;
+            padding: 0.7rem 1.5rem;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .control-btn:hover {
+            background: rgba(79, 109, 245, 0.2);
+            color: #e0e0f0;
+            transform: translateY(-2px);
+        }
+        
+        .footer-note {
+            text-align: center;
+            margin-top: 4rem;
+            padding: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            color: #5d5d8d;
+            font-size: 0.9rem;
+        }
+        
+        .pulsing-dot {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            background: #4f6df5;
+            border-radius: 50%;
+            margin-left: 0.5rem;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 0.4; }
+            50% { opacity: 1; }
+            100% { opacity: 0.4; }
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+            
+            .timeline-line {
+                left: 30px;
+            }
+            
+            .stage-row {
+                flex-direction: row !important;
+                margin-bottom: 3rem;
+            }
+            
+            .stage-card {
+                width: calc(100% - 60px);
+                margin-left: 60px;
+            }
+            
+            .stage-row::before {
+                left: 30px;
+            }
+            
+            .controls {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .control-btn {
+                width: 100%;
+                max-width: 300px;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1 class="logo">SYNTAXFORGE</h1>
+            <div class="tagline">NFTS FIRST, TOKEN SECOND, TOOLS FOLLOW</div>
+            <div class="moto">Tools Sell Themselves</div>
+            
+            <div class="stealth-note">
+                <i class="fas fa-user-secret"></i> Stealth execution in progress. Beta access via NFT donation. Tools launch after token ecosystem established.
+            </div>
+        </header>
+        
+        <div class="current-focus">
+            <h3><i class="fas fa-crosshairs"></i> CURRENT FOCUS: STAGE 2 - TOKEN DEVELOPMENT</h3>
+            <p>Following successful 1/1 NFT beta distribution, we're building the token that will power the entire ecosystem.</p>
+        </div>
+        
+        <div class="roadmap-container">
+            <div class="timeline-line"></div>
+            
+            <div class="stages" id="stages">
+                <!-- Stages will be dynamically generated here -->
+            </div>
+        </div>
+        
+        <div class="controls">
+            <button class="control-btn" id="prevStage">
+                <i class="fas fa-arrow-left"></i> Previous Stage
+            </button>
+            <button class="control-btn" id="nextStage">
+                Next Stage <i class="fas fa-arrow-right"></i>
+            </button>
+            <button class="control-btn" id="toggleDetails">
+                <i class="fas fa-info-circle"></i> Toggle Details
+            </button>
+        </div>
+        
+        <div class="footer-note">
+            <p>Execution path locked. Beta testing via NFT access. Token fuels the ecosystem.</p>
+            <p>Current status: <span class="pulsing-dot"></span> Active development</p>
+        </div>
+    </div>
+
+    <script>
+        // Streamlined 7-stage roadmap
+        const roadmapStages = [
+            {
+                title: "1/1 NFT Collection & Beta Access",
+                description: "Exclusive 1/1 NFT collection created. Select beta users receive donated NFTs for early testing and feedback.",
+                meta: ["1/1 NFTs", "Beta Testing", "Donated Access"],
+                icon: "fas fa-gem",
+                status: "complete",
+                details: "The foundation: ultra-exclusive NFTs grant early access to tools. No public mint, only selected recipients."
+            },
+            {
+                title: "Token Development",
+                description: "Development of the utility token that will power the ecosystem. Fixed supply, strategic tokenomics.",
+                meta: ["Utility Token", "Fixed Supply", "Core Protocol"],
+                icon: "fas fa-code",
+                status: "active",
+                details: "Building the token that will be required for all future access and transactions within the ecosystem."
+            },
+            {
+                title: "Token Launch",
+                description: "Stealth token deployment. No public announcements, organic discovery only.",
+                meta: ["Stealth Launch", "No Marketing", "Organic Growth"],
+                icon: "fas fa-rocket",
+                status: "upcoming",
+                details: "Silent deployment to establish the token economy before any tool licensing goes live."
+            },
+            {
+                title: "Treasury Buy & Convert to NFTs",
+                description: "Treasury acquires tokens and converts them into Access NFTs at 4M tokens per NFT rate.",
+                meta: ["Treasury Allocation", "Token Conversion", "NFT Creation"],
+                icon: "fas fa-exchange-alt",
+                status: "upcoming",
+                details: "Strategic treasury deployment to create additional Access NFTs for distribution and rewards."
+            },
+            {
+                title: "Distribute & Burn NFTs",
+                description: "Distribute Access NFTs to community via rewards, raffles, and burn mechanism (4M tokens per NFT burnt).",
+                meta: ["NFT Distribution", "Token Burn", "4M/NFT Rate"],
+                icon: "fas fa-fire",
+                status: "upcoming",
+                details: "Token burn mechanism activates as NFTs are distributed, creating scarcity and aligning incentives."
+            },
+            {
+                title: "Launch Tool Licensing",
+                description: "Tool licensing platform goes live. Token or NFT required for all access.",
+                meta: ["Token-Gated", "NFT Access", "Licensing Platform"],
+                icon: "fas fa-toolbox",
+                status: "upcoming",
+                details: "With token and NFT ecosystem established, tools become available to holders. Tools sell themselves."
+            },
+            {
+                title: "To Be Continued...",
+                description: "Future development based on community needs and ecosystem growth.",
+                meta: ["Future Roadmap", "Community Driven", "Ecosystem Growth"],
+                icon: "fas fa-infinity",
+                status: "tbc",
+                details: "The path continues based on holder feedback and ecosystem evolution. Build in public."
+            }
+        ];
+
+        // DOM elements
+        const stagesContainer = document.getElementById('stages');
+        const prevBtn = document.getElementById('prevStage');
+        const nextBtn = document.getElementById('nextStage');
+        const toggleBtn = document.getElementById('toggleDetails');
+        const currentFocus = document.querySelector('.current-focus');
+
+        // State
+        let currentStage = 1; // Stage 2 is active (Token Development)
+        let showDetails = true;
+
+        // Initialize roadmap
+        function renderRoadmap() {
+            stagesContainer.innerHTML = '';
+            
+            roadmapStages.forEach((stage, index) => {
+                const stageRow = document.createElement('div');
+                stageRow.className = `stage-row ${index === currentStage ? 'active' : ''} ${stage.status === 'complete' ? 'completed' : ''}`;
+                
+                const statusClass = `status-${stage.status}`;
+                
+                stageRow.innerHTML = `
+                    <div class="stage-card ${index === currentStage ? 'active' : ''}">
+                        <div class="stage-number">${index + 1}</div>
+                        <div class="stage-status ${statusClass}">
+                            ${stage.status === 'complete' ? 'Complete' : 
+                              stage.status === 'active' ? 'Active' : 
+                              stage.status === 'tbc' ? 'To Be Continued' : 'Upcoming'}
+                        </div>
+                        <div class="stage-title">
+                            <i class="${stage.icon}"></i> ${stage.title}
+                        </div>
+                        <div class="stage-description">${stage.description}</div>
+                        ${showDetails && stage.details ? `<div class="stage-description" style="font-style: italic; color: #8a8ab5; margin-top: 0.5rem;">${stage.details}</div>` : ''}
+                        <div class="stage-meta">
+                            ${stage.meta.map(meta => {
+                                const isBurn = meta.includes('Burn') || meta.includes('4M');
+                                const tagClass = isBurn ? 'meta-tag token-burn' : 'meta-tag';
+                                return `<span class="${tagClass}"><i class="fas fa-tag"></i> ${meta}</span>`;
+                            }).join('')}
+                        </div>
+                    </div>
+                `;
+                
+                // Add click event to set as active stage
+                stageRow.addEventListener('click', () => {
+                    setActiveStage(index);
+                });
+                
+                stagesContainer.appendChild(stageRow);
+            });
+            
+            // Update current focus section
+            updateCurrentFocus();
+        }
+
+        // Update current focus section
+        function updateCurrentFocus() {
+            const activeStage = roadmapStages[currentStage];
+            currentFocus.innerHTML = `
+                <h3><i class="fas fa-crosshairs"></i> CURRENT FOCUS: STAGE ${currentStage + 1} - ${activeStage.title.toUpperCase()}</h3>
+                <p>${activeStage.description} ${showDetails ? activeStage.details : ''}</p>
+            `;
+        }
+
+        // Set active stage
+        function setActiveStage(index) {
+            currentStage = index;
+            renderRoadmap();
+            
+            // Scroll to active stage
+            const activeElement = document.querySelector('.stage-row.active');
+            if (activeElement) {
+                activeElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        }
+
+        // Event listeners
+        prevBtn.addEventListener('click', () => {
+            if (currentStage > 0) {
+                setActiveStage(currentStage - 1);
+            }
+        });
+
+        nextBtn.addEventListener('click', () => {
+            if (currentStage < roadmapStages.length - 1) {
+                setActiveStage(currentStage + 1);
+            }
+        });
+
+        toggleBtn.addEventListener('click', () => {
+            showDetails = !showDetails;
+            toggleBtn.innerHTML = showDetails ? 
+                '<i class="fas fa-eye-slash"></i> Hide Details' : 
+                '<i class="fas fa-eye"></i> Show Details';
+            renderRoadmap();
+        });
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft' && currentStage > 0) {
+                setActiveStage(currentStage - 1);
+            } else if (e.key === 'ArrowRight' && currentStage < roadmapStages.length - 1) {
+                setActiveStage(currentStage + 1);
+            }
+        });
+
+        // Initialize
+        renderRoadmap();
+    </script>
+</body>
+</html>
